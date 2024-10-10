@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Iguana",
+  "version": "0.1",
+  "description": "boj virtual participation scoreboard",
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "js": [
+        "practice.js"
+      ],
+      "matches": [
+        "https://www.acmicpc.net/group/practice/*"
+      ]
+    },
+    {
+      "js": [
+        "view.js"
+      ],
+      "matches": [
+        "https://www.acmicpc.net/group/practice/view/*"
+      ]
+    }
+  ]
+}
