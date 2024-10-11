@@ -371,7 +371,9 @@ async function draw(contest_id, time_passed) {
 }
 
 timeSlider.addEventListener('input', () => {
-    draw(practice['contest_id'], parseInt(timeSlider.value));
+    if ('contest_id' in practice) {
+        draw(practice['contest_id'], parseInt(timeSlider.value));
+    }
 });
 
 document
@@ -380,4 +382,6 @@ document
     )
     .prepend(timeSlider);
 
-draw(practice['contest_id'], parseInt(timeSlider.value));
+if ('contest_id' in practice) {
+    draw(practice['contest_id'], parseInt(timeSlider.value));
+}
