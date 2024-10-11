@@ -350,7 +350,20 @@ const timeSlider = document.createElement('input');
 timeSlider.type = 'range';
 timeSlider.min = 0;
 timeSlider.max = (practice['practice_end'] - practice['practice_start']) / 60;
-timeSlider.value = timeSlider.max;
+
+const currentTime = Math.floor(Date.now() / 1000);
+
+// Disable the slider if current time is before practice_end
+if (currentTime < practice['practice_end']) {
+    timeSlider.disabled = true;
+} else {
+    timeSlider.disabled = false;
+}
+
+const timePassedinMinutes = Math.floor(
+    Math.max(0, currentTime - practice['practice_start']) / 60
+);
+timeSlider.value = timePassedinMinutes;
 
 async function draw(contest_id, time_passed) {
     const competition_scoreboard = await get_competition_scoreboard(contest_id);
