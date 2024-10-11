@@ -1,19 +1,8 @@
-// Select the table element
-const table = document.querySelector(
-    'body > div.wrapper > div.container.content > div > div:nth-child(4) > div > table'
-);
-
-function get_contests() {
-    const options = {
-        '2022 Southeast USA Regional Programming Contest Division 2':
-            'ser2022-div2',
-        '2021 Southeast USA Regional Programming Contest Division 2':
-            'ser2021-div2',
-        '2020 Southeast USA Regional Programming Contest Division 2':
-            'ser2020-div2',
-    };
-
-    return options;
+async function get_contests() {
+    const url = `https://raw.githubusercontent.com/sion-k/iguana-scoreboard/refs/heads/main/contests.json`;
+    const response = await fetch(url);
+    const contests = await response.json();
+    return contests;
 }
 
 function parse_group_practice_id(row) {
@@ -40,10 +29,36 @@ function get_practice(group_id, practice_id) {
     return practice;
 }
 
-const contests = get_contests();
+async function display() {
+    /*
+    [
+        {
+            "contest_id": "ser2021-div2",
+            "contest_name": "2021 Southeast USA Regional Programming Contest Division 2",
+            "location": "ser2021-div2.json"
+        },
+        {
+            "contest_id": "ser2022-div2",
+            "contest_name": "2022 Southeast USA Regional Programming Contest Division 2",
+            "location": "ser2022-div2.json"
+        }
+    ]
+    */
+    const contests = await get_contests();
 
-// Check if the table exists
-if (table) {
+    const contest_name_id_dict = {};
+    contests.forEach((contest) => {
+        contest_name_id_dict[contest['contest_name']] = contest['contest_id'];
+    });
+
+    const table = document.querySelector(
+        'body > div.wrapper > div.container.content > div > div:nth-child(4) > div > table'
+    );
+    if (!table) {
+        return;
+    }
+
+    // Check if the table exists
     // Get all the rows in the tbody
     const rows = table.querySelectorAll('tbody tr');
 
@@ -52,7 +67,7 @@ if (table) {
         const newCell = document.createElement('td');
         const select = document.createElement('select');
 
-        const options = ['없음', ...Object.keys(contests)];
+        const options = ['없음', ...Object.keys(contest_name_id_dict)];
         options.forEach((option) => {
             const optionElement = document.createElement('option');
             optionElement.value = option;
@@ -99,10 +114,9 @@ if (table) {
 
         // Store data in localStorage when the selection changes
         select.addEventListener('change', () => {
-            practice['contest_id'] = contests[select.value];
+            practice['contest_id'] = contest_name_id_dict[select.value];
             practice['contest_name'] =
                 select.value === '없음' ? undefined : select.value;
-            console.log(practice);
             localStorage.setItem(
                 `iguana/group/${groupId}/practice/${practiceId}`,
                 JSON.stringify(practice)
@@ -113,3 +127,5 @@ if (table) {
         row.appendChild(newCell);
     });
 }
+
+display();
