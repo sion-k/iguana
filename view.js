@@ -5,25 +5,31 @@ async function get_competition_scoreboard(contest_id) {
 
     if ('competition_scoreboard' in practice) {
         return practice['competition_scoreboard'];
-    } else {
-        const url = `https://raw.githubusercontent.com/sion-k/iguana-scoreboard/refs/heads/main/${contest_id}.json`;
+    }
 
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log(data);
-            practice['competition_scoreboard'] = data;
-            localStorage.setItem(
-                `iguana/group/${groupId}/practice/${practiceId}`,
-                JSON.stringify(practice)
-            );
-            return data; // Return the data for further processing
-        } catch (error) {
-            console.error('Error fetching the scoreboard:', error);
+    const contests = await get_contests();
+    const contest = contests.find(
+        (contest) => contest['contest_id'] === contest_id
+    );
+    const location = contest['location'];
+
+    const url = `https://raw.githubusercontent.com/sion-k/iguana-scoreboard/refs/heads/main/${location}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        const data = await response.json();
+        console.log(data);
+        practice['competition_scoreboard'] = data;
+        localStorage.setItem(
+            `iguana/group/${groupId}/practice/${practiceId}`,
+            JSON.stringify(practice)
+        );
+        return data; // Return the data for further processing
+    } catch (error) {
+        console.error('Error fetching the scoreboard:', error);
     }
 }
 
