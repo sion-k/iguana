@@ -33,6 +33,13 @@ function rewind(scoreboard, now) {
     new_scoreboard['standings'] = new_scoreboard['standings'].map(
         (standing) => {
             standing['judge'] = standing['judge'].map((judge) => {
+                if (judge['status'] === 'wronganswer') {
+                    judge['time'] = scoreboard['duration'];
+                }
+                return judge;
+            });
+
+            standing['judge'] = standing['judge'].map((judge) => {
                 if (judge['status'] !== null && now < judge['time']) {
                     judge['status'] = 'wronganswer';
                     if (now < judge['time'] / judge['submission']) {
