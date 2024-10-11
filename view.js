@@ -85,6 +85,13 @@ const results = scrape();
 const scoreboard = parse(results);
 
 function get_practice_scoreboard() {
+    const [groupId, practiceId] = parse_group_practice_id();
+    const practice = JSON.parse(
+        localStorage.getItem(`iguana/group/${groupId}/practice/${practiceId}`)
+    );
+
+    scoreboard['duration'] =
+        (practice['practice_end'] - practice['practice_start']) / 60;
     return scoreboard;
 }
 
@@ -356,7 +363,7 @@ async function draw(contest_id, time_passed) {
     const competition_scoreboard = await get_competition_scoreboard(contest_id);
     if ('contest_id' in practice && competition_scoreboard) {
         const competition = rewind(competition_scoreboard, time_passed);
-        const practice = get_practice_scoreboard();
+        const practice = rewind(get_practice_scoreboard(), time_passed);
 
         const virtual = merge(competition, practice);
         display(virtual);
