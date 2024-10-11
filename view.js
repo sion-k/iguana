@@ -81,24 +81,11 @@ function rewind(scoreboard, now) {
     return new_scoreboard;
 }
 
+const results = scrape();
+const scoreboard = parse(results);
+
 function get_practice_scoreboard() {
-    const practice = JSON.parse(
-        localStorage.getItem(`iguana/group/${groupId}/practice/${practiceId}`)
-    );
-
-    if ('practice_scoreboard' in practice) {
-        return practice['practice_scoreboard'];
-    } else {
-        const results = scrape();
-        const scoreboard = parse(results);
-        practice['practice_scoreboard'] = scoreboard;
-
-        localStorage.setItem(
-            `iguana/group/${groupId}/practice/${practiceId}`,
-            JSON.stringify(practice)
-        );
-        return scoreboard;
-    }
+    return scoreboard;
 }
 
 /*
