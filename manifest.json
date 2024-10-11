@@ -3,9 +3,9 @@
   "name": "Iguana",
   "version": "0.1",
   "description": "boj virtual participation scoreboard",
-  "permissions": [
-    "activeTab"
-  ],
+  "icons": {
+    "32": "iguana32.png"
+  },
   "content_scripts": [
     {
       "js": [
